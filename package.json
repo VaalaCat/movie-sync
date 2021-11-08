@@ -16,12 +16,17 @@
   "dependencies": {
     "@mdi/font": "5.9.55",
     "axios": "^0.23.0",
+    "body-parser": "^1.19.0",
     "core-js": "^3.6.5",
+    "cors": "^2.8.5",
+    "http": "^0.0.1-security",
+    "path": "^0.12.7",
     "qs": "^6.10.1",
     "roboto-fontface": "*",
     "video.js": "^7.15.4",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
+    "vue-socket.io": "^3.0.10",
     "vuetify": "^3.0.0-alpha.0",
     "webfontloader": "^1.0.0"
   },
