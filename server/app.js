@@ -5,22 +5,19 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const io = require("socket.io")({
-  allowEIO3: true
+	allowEIO3: true
 }).listen(server);
-const config = require('./config')
+const config = require('./config');
 
 app.use(cors())
-// app.use((req, res, next) => {
-//   console.log('Time: ', Date.now());
-//   next();
-// });
-
-// app.use(express.static(path.join(__dirname, '../dist')));
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+	console.log(socket.id, "is connected")
+	io.on('message', data => {
+		console.log(data)
+	})
 });
 
 server.listen(config.PORT, () => {
-  console.log('listening on *:', config.PORT);
+	console.log('listening on *:', config.PORT);
 });

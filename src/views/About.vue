@@ -1,7 +1,7 @@
 <template>
   <div class="about">
     <Videojs
-      :videosrc="'https://kol-fans.fp.ps.netease.com/file/616c4cc683c18c62adf6dc7eMDuQSBZl03?from=ysjdm.com|ysjdm.net'"
+      :videosrc="'https://static.chive.vaa.la/html/video/式守同學不只可愛而已S1E1.mp4'"
     />
   </div>
 </template>
