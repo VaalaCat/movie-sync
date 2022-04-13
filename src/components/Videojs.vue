@@ -1,14 +1,18 @@
 <template>
   <div class="video">
-    <v-text-field label="Regular" v-model="url"></v-text-field>
+    <v-text-field label="视频地址" v-model="url"></v-text-field>
+    <v-text-field label="房间号" v-model="room"></v-text-field>
+    <v-text-field label="用户名" v-model="user"></v-text-field>
     <v-btn @click="changeSrc()">加载</v-btn>
     <v-btn @click="getTime()">获取时间</v-btn>
     <v-btn @click="stopVideo()">暂停</v-btn>
     <v-btn @click="playVideo()">播放</v-btn>
+    <v-btn @click="syncVideo()">同步</v-btn>
     <v-div v-show="start"
       ><video id="myVideo" class="video-js">
         <source :src="url" type="video/mp4" /></video
     ></v-div>
+    
   </div>
 </template>
 
@@ -16,8 +20,15 @@
 import Video from "video.js";
 import io from "socket.io-client";
 let myPlayer;
-const socket = io.connect("/socket.io");
-
+const socket = io.connect("127.0.0.1:8000");
+socket.on("sync", (data) => {
+  let myTime= JSON.stringify(myPlayer.currentTime())
+  console.log("data:",data)
+  console.log("myTime:",myTime)
+  if (parseInt(myTime)<parseInt(data)) {
+    myPlayer.currentTime(parseFloat(data));
+  }
+});
 /* eslint-disable */
 export default {
   name: "Videojs",
@@ -25,20 +36,17 @@ export default {
   data() {
     return {
       start: false,
-      url: "",
+      url: "https://static.chive.vaa.la/html/video/式守同學不只可愛而已S1E1.mp4",
+      time: 0,
+      user: "vaala",
+      room: "room",
     };
   },
   mounted() {
     this.initVideo();
-    socket.on("online", (name) => {
-      console.log(name);
-    });
     setTimeout(() => {
       this.getTime();
     }, 4000);
-    socket.on("message", (data) => {
-      console.log(data);
-    });
   },
   methods: {
     initVideo() {
@@ -58,11 +66,18 @@ export default {
         src: this.url,
         type: "video/mp4",
       });
+      socket.on("getTime", (data) => {
+        console.log("getTime: " + data)
+        socket.emit("time",`${this.room}:`+JSON.stringify(myPlayer.currentTime()));
+      })
+      socket.emit("join",`${this.room}:${this.user}`);
+    },
+    syncVideo() {
+      console.log("syncVideo");
+      socket.emit("getTime", `${this.room}:${this.user}`);
     },
     getTime() {
       console.log("videoTimeis:", myPlayer.currentTime());
-      socket.send("me", myPlayer.currentTime());
-      return myPlayer.currentTime();
     },
     stopVideo() {
       myPlayer.pause();
