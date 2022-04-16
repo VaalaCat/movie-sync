@@ -8,6 +8,8 @@
     <v-btn @click="stopVideo()">暂停</v-btn>
     <v-btn @click="playVideo()">播放</v-btn>
     <v-btn @click="syncVideo()">同步</v-btn>
+    <v-btn @click="getUsers()">显示所有用户</v-btn>
+    <v-btn @click="join()">加入</v-btn>
     <v-div v-show="start"
       ><video id="myVideo" class="video-js">
         <source :src="url" type="video/mp4" /></video
@@ -21,14 +23,10 @@ import Video from "video.js";
 import io from "socket.io-client";
 let myPlayer;
 const socket = io.connect("127.0.0.1:8000");
-socket.on("sync", (data) => {
-  let myTime= JSON.stringify(myPlayer.currentTime())
-  console.log("data:",data)
-  console.log("myTime:",myTime)
-  if (parseInt(myTime)<parseInt(data)) {
-    myPlayer.currentTime(parseFloat(data));
-  }
-});
+socket.on("allUsers",(data)=>{
+  console.log(data)
+})
+
 /* eslint-disable */
 export default {
   name: "Videojs",
@@ -68,8 +66,18 @@ export default {
       });
       socket.on("getTime", (data) => {
         console.log("getTime: " + data)
-        socket.emit("time",`${this.room}:`+JSON.stringify(myPlayer.currentTime()));
+        socket.emit("time",`${this.room}:${this.user}:`+JSON.stringify(myPlayer.currentTime()));
       })
+    },
+    join() {
+      socket.on("sync", (data) => {
+        let myTime= JSON.stringify(myPlayer.currentTime())
+        console.log("data:",data)
+        console.log("myTime:",myTime)
+        if (parseInt(myTime)<parseInt(data.split(":")[1])) {
+          myPlayer.currentTime(parseFloat(data.split(":")[1]));
+        }
+      });
       socket.emit("join",`${this.room}:${this.user}`);
     },
     syncVideo() {
@@ -78,6 +86,9 @@ export default {
     },
     getTime() {
       console.log("videoTimeis:", myPlayer.currentTime());
+    },
+    getUsers() {
+      socket.emit("getUsers",`${this.room}:${this.user}`)
     },
     stopVideo() {
       myPlayer.pause();

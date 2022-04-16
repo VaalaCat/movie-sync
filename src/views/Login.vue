@@ -1,9 +1,17 @@
 <template>
-  <div class="login">登录页面 [[todo]]</div>
+  <v-text-field v-model="roomName" label="房间名"></v-text-field>
+  <v-btn>加入房间</v-btn>
+  {{roomName}}
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      roomName: ""
+    }
+  }
+};
 </script>
 
 <style>
