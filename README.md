@@ -6,6 +6,8 @@
 
 > 博客地址(实时更新)：[https://vaala.cat/2022/04/17/%E5%BC%82%E5%9C%B0%E5%A4%9A%E4%BA%BA%E5%9C%A8%E7%BA%BF%E7%94%B5%E5%BD%B1%E9%99%A2/](https://vaala.cat/2022/04/17/%E5%BC%82%E5%9C%B0%E5%A4%9A%E4%BA%BA%E5%9C%A8%E7%BA%BF%E7%94%B5%E5%BD%B1%E9%99%A2/)
 
+> 演示地址: [http://82.157.94.120:9999/](http://82.157.94.120:9999/) 不保证可用性，有需要的同学请自行搭建服务
+
 ## 引言
 
 最近一段时间和npy异地，经常就会有一些一起看视频的需求，然鹅市面上视频共享的产品要么是因为版权的原因资源不足，要么是因为产品定位没有办法顾及到这种小众市场需求。
@@ -85,7 +87,7 @@
 首先我们需要分别下载前端和后端文件，
 
 * 前端：<https://github.com/VaalaCat/movie-sync/releases>
-* 后端：
+* 后端：<https://github.com/VaalaCat/movie-sync-server/releases>
 
 下载完成后在服务端创建文件夹，结构为：
 
