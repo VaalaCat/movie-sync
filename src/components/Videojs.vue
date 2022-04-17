@@ -86,6 +86,7 @@ export default {
       room: "room",
       method: "x",
       timer: null,
+      sendTimer: null,
       currentTime: 0,
     };
   },
@@ -94,6 +95,9 @@ export default {
     this.timer = setInterval(() => {
       this.syncVideo();
     }, 10000);
+    this.sendTimer = setInterval(() => {
+      this.sendTime();
+    },1000);
     socket.on("allUsers",(data)=>{
       this.userList = data.split(",").slice(0, -1);
       if(this.method == "x"){
@@ -108,7 +112,10 @@ export default {
       console.log(data);
     });
     socket.on("setTime", (data) => {
-      myPlayer.currentTime(parseFloat(data));
+      if (Math.abs(parseFloat(data) - this.currentTime)>2) {
+        console.log("setTime");
+        myPlayer.currentTime(parseFloat(data));
+      }
     })
     socket.on("join", (data)=>{
       console.log("joined",data)
@@ -119,7 +126,7 @@ export default {
       let myTime= JSON.stringify(myPlayer.currentTime())
       console.log("data:",data)
       console.log("myTime:",myTime)
-      if (parseFloat(myTime)<parseFloat(data.split(":")[1]) && Math.abs(parseFloat(myTime)-parseFloat(data.split(":")[1]))>5) {
+      if (parseFloat(myTime)<parseFloat(data.split(":")[1]) && Math.abs(parseFloat(myTime)-parseFloat(data.split(":")[1]))>3) {
         console.log("change")
         myPlayer.currentTime(parseFloat(data.split(":")[1]));
       }
@@ -149,6 +156,9 @@ export default {
       });
       myPlayer.on('timeupdate',  () => {
         let tmpTime=myPlayer.currentTime()
+        if(tmpTime==0) {
+          return;
+        }
         if(tmpTime - this.currentTime > 2 || tmpTime - this.currentTime < -2){
           console.log("xxxxxxxxxxxxxxxx")
           socket.emit('setTime',`${this.room}:${this.user}:`+JSON.stringify(myPlayer.currentTime()))
@@ -166,12 +176,14 @@ export default {
     },
     syncVideo() {
       console.log("syncVideo");
-      socket.emit("getTime", `${this.room}:${this.user}`);
-      socket.emit("sync",`${this.room}:${this.user}`)
+      socket.emit("sync", `${this.room}:${this.user}`);
     },
     getTime() {
       console.log("videoTimeis:", myPlayer.currentTime());
       socket.emit("time",`${this.room}:${this.user}:`+JSON.stringify(myPlayer.currentTime()));
+    },
+    sendTime() {
+      this.getTime();
     },
     getUsers() {
       socket.emit("getUsers",`${this.room}:${this.user}`)
