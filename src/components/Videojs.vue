@@ -95,7 +95,6 @@ export default {
   },
   mounted() {
     this.room = this.$route.params.roomName;
-
     socket.on("allUsers",(data)=>{
       this.userList = data.split(",").slice(0, -1);
       if(this.userList.indexOf(this.user)!=-1 && this.userList.length==1 && this.method=="join"){
@@ -207,6 +206,9 @@ export default {
     getTime() {
       console.log("videoTimeis:", myPlayer.currentTime());
       socket.emit("time",`${this.room}:::${this.user}:::`+JSON.stringify(myPlayer.currentTime()));
+    },
+    sendTime() {
+      this.getTime();
     },
     sendTime() {
       this.getTime();
