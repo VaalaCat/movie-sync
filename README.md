@@ -4,7 +4,7 @@
 
 > 后端代码仓库，请访问 [https://github.com/VaalaCat/movie-sync-server](https://github.com/VaalaCat/movie-sync-server)
 
-> 博客地址(实时更新)：
+> 博客地址(实时更新)：[https://vaala.cat/2022/04/17/%E5%BC%82%E5%9C%B0%E5%A4%9A%E4%BA%BA%E5%9C%A8%E7%BA%BF%E7%94%B5%E5%BD%B1%E9%99%A2/](https://vaala.cat/2022/04/17/%E5%BC%82%E5%9C%B0%E5%A4%9A%E4%BA%BA%E5%9C%A8%E7%BA%BF%E7%94%B5%E5%BD%B1%E9%99%A2/)
 
 ## 引言
 
