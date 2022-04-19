@@ -167,6 +167,7 @@ export default {
     syncVideo() {
       console.log("syncVideo");
       socket.emit("getTime", `${this.room}:${this.user}`);
+      socket.emit("sync",`${this.room}:${this.user}`)
     },
     getTime() {
       console.log("videoTimeis:", myPlayer.currentTime());
@@ -203,5 +204,6 @@ export default {
 };
 </script>
 
-    <style scoped>
+<style scoped>
+  
 </style>

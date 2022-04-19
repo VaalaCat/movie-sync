@@ -1,23 +1,11 @@
-module.exports = {
-	publicPath: "/movie",
-	devServer: {
-		// proxy: {
-		// 	'/api': {
-		// 		target: 'http://192.168.123.151:8000/ws',
-		// 		changeOrigin: true,
-		// 		ws: true,
-		// 		pathRewrite: {
-		// 			'^/api': ''
-		// 		}
-		// 	},
-		// 	'/socket.io': {
-		// 		target: 'http://192.168.123.151:8000/',
-		// 		changeOrigin: true,
-		// 		ws: true,
-		// 	}
-		// }
-	},
-	transpileDependencies: [
-		'vuetify'
-	]
-}
+const { defineConfig } = require('@vue/cli-service')
+module.exports = defineConfig({
+  transpileDependencies: true,
+
+  publicPath: "/movie",
+  pluginOptions: {
+    vuetify: {
+			// https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vuetify-loader
+		}
+  }
+})

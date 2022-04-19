@@ -1,49 +1,35 @@
 {
   "name": "movie-sync",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "A online movie share program",
-  "author": {
-    "name": "VaalaCat"
-  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "test": "node test.js"
+    "lint": "vue-cli-service lint"
   },
-  "main": "index.js",
   "dependencies": {
     "@mdi/font": "5.9.55",
-    "axios": "^0.23.0",
-    "body-parser": "^1.19.0",
-    "core-js": "^3.6.5",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "http": "^0.0.1-security",
-    "path": "^0.12.7",
-    "qs": "^6.10.1",
+    "axios": "^0.26.1",
+    "core-js": "^3.8.3",
     "roboto-fontface": "*",
-    "socket.io": "^4.4.0",
-    "video.js": "^7.15.4",
-    "vue": "^3.0.0",
-    "vue-router": "^4.0.0-0",
+    "video.js": "^7.18.1",
+    "vue": "^3.2.13",
+    "vue-router": "^4.0.14",
     "vue-socket.io": "^3.0.10",
-    "vuetify": "^3.0.0-alpha.0",
+    "vuetify": "npm:@vuetify/nightly@next",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-router": "~4.5.0",
-    "@vue/cli-service": "~5.0.0-beta.3",
-    "@vue/compiler-sfc": "^3.0.0",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.0.0",
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3",
     "sass": "^1.38.0",
     "sass-loader": "^10.0.0",
-    "vue-cli-plugin-vuetify": "~2.4.3",
+    "vue-cli-plugin-vuetify": "~2.4.8",
     "vuetify-loader": "^2.0.0-alpha.0"
   },
   "eslintConfig": {
@@ -56,7 +42,7 @@
       "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@babel/eslint-parser"
     },
     "rules": {}
   },
@@ -65,7 +51,7 @@
     "last 2 versions",
     "not dead"
   ],
-  "_id": "movie-sync@1.0.0",
+  "_id": "movie-sync@0.1.0",
   "bugs": {
     "url": "https://github.com/VaalaCat/movie-sync/issues"
   },
