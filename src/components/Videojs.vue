@@ -71,7 +71,7 @@
 import Video from "video.js";
 import io from "socket.io-client";
 let myPlayer;
-const socket = io.connect("http://localhost:8000");
+const socket = io.connect();
 
 
 /* eslint-disable */
