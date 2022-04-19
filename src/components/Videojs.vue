@@ -30,19 +30,21 @@
     <v-btn @click="setUrl()">设置视频地址</v-btn>
     <v-btn @click="join()">加入</v-btn> -->
     <v-expand-transition>
-    <div v-show="method=='create' && url!='' && user!=''">
-    <v-btn @click="createRoom()" >创建房间</v-btn>
-    </div>
-    </v-expand-transition>
-    <v-expand-transition>
-    <div  v-show="method=='join' && url!='' && user!=''">
-    <v-btn @click="joinRoom()">加入房间</v-btn>
-    </div>
-    </v-expand-transition>
-    <v-expand-transition>
-    <div v-show="method!='x' && url!='' && user!=''">
-    <v-btn @click="syncVideo()" >手动同步</v-btn>
-    </div>
+    <v-row class="d-flex justify-center">
+      <v-col>
+        <div v-show="method=='create' && url!='' && user!=''">
+        <v-btn @click="createRoom()" >设置房间</v-btn>
+        </div>
+        <div v-show="method=='join' && url!='' && user!=''">
+        <v-btn @click="joinRoom()" >加入房间</v-btn>
+        </div>
+      </v-col>
+      <v-col>
+        <div v-show="method!='x' && url!='' && user!=''">
+        <v-btn @click="syncVideo()" >手动同步</v-btn>
+        </div>
+      </v-col>
+    </v-row>
     </v-expand-transition>
     <v-expand-transition>
     <div v-show="method=='x'">
@@ -57,8 +59,8 @@
     </div>
     </v-expand-transition>
     <v-expand-transition>
-    <div v-show="start"
-      ><video id="myVideo" class="video-js" >
+    <div v-show="start" style="margin: 20px;">
+      <video id="myVideo" class="video-js vjs-default-skin">
         <source :src="url" type="video/mp4" /></video
     ></div>
     </v-expand-transition>
@@ -69,7 +71,7 @@
 import Video from "video.js";
 import io from "socket.io-client";
 let myPlayer;
-const socket = io.connect();
+const socket = io.connect("http://localhost:8000");
 
 
 /* eslint-disable */
@@ -87,21 +89,23 @@ export default {
       method: "x",
       timer: null,
       sendTimer: null,
+      createTimer: null,
       currentTime: 0,
     };
   },
   mounted() {
     this.room = this.$route.params.roomName;
-    this.timer = setInterval(() => {
-      this.syncVideo();
-    }, 10000);
-    this.sendTimer = setInterval(() => {
-      this.sendTime();
-    },1000);
+
     socket.on("allUsers",(data)=>{
       this.userList = data.split(",").slice(0, -1);
-      if(this.method == "x"){
-        this.method="join";
+      if(this.userList.indexOf(this.user)!=-1 && this.userList.length==1 && this.method=="join"){
+        this.method = "create";
+      }
+      if(this.userList.indexOf(this.user)==-1 && this.userList.length>=1 && this.method!="join"){
+        this.method = "join";
+      }
+      if(this.userList.length==0){
+        this.method = "create";
       }
     })
     socket.on("Null",(data)=>{
@@ -112,13 +116,18 @@ export default {
       console.log(data);
     });
     socket.on("setTime", (data) => {
-      if (Math.abs(parseFloat(data) - this.currentTime)>2) {
+      let showName = data.split(":::")[0];
+      let newTime = data.split(":::")[1];
+      if (showName == this.user){
+        return
+      }
+      if (Math.abs(parseFloat(newTime) - parseFloat(myPlayer.currentTime()))>2) {
         console.log("setTime");
-        myPlayer.currentTime(parseFloat(data));
+        myPlayer.currentTime(parseFloat(newTime));
       }
     })
     socket.on("join", (data)=>{
-      console.log("joined",data)
+      console.log("joined",data.split(":::"))
       this.getTime();
       this.getUsers();
     })
@@ -126,25 +135,46 @@ export default {
       let myTime= JSON.stringify(myPlayer.currentTime())
       console.log("data:",data)
       console.log("myTime:",myTime)
-      if (parseFloat(myTime)<parseFloat(data.split(":")[1]) && Math.abs(parseFloat(myTime)-parseFloat(data.split(":")[1]))>3) {
+      let showName = data.split(":::")[2];
+      console.log(showName)
+      if (parseFloat(myTime)<parseFloat(data.split(":::")[1]) && Math.abs(parseFloat(myTime)-parseFloat(data.split(":::")[1]))>2) {
         console.log("change")
-        myPlayer.currentTime(parseFloat(data.split(":")[1]));
+        myPlayer.currentTime(parseFloat(data.split(":::")[1]));
       }
     });
-    setTimeout(()=>{
+    socket.on("getTime", (data) => {
+      console.log("getTime: " + data)
+      socket.emit("time",`${this.room}:::${this.user}:::`+JSON.stringify(myPlayer.currentTime()));
+    })
+    socket.on("leaveRoom", (data)=>{
+      this.getUsers();
+    })
+    this.timer = setInterval(() => {
+      if (this.start==true){
+        this.syncVideo();
+      }
+    }, 10000);
+    this.sendTimer = setInterval(() => {
+      if (this.start==true){
+        this.sendTime();
+      }
+    },1000);
+    this.createTimer = setInterval(() => {
       this.getUsers();
       this.getUrl();
-    }, 3000)
+    },3000);
   },
   methods: {
     initVideo() {
       myPlayer = Video(myVideo, {
         controls: true,
         preload: true,
-        width: "640px",
+        // width: "640px",
+        // fill: true,
+        // responsive: true,
+        fluid: true,
         // height: "200px",
       });
-      console.log("stop");
     },
     changeSrc() {
       this.start = true;
@@ -161,39 +191,35 @@ export default {
         }
         if(tmpTime - this.currentTime > 2 || tmpTime - this.currentTime < -2){
           console.log("xxxxxxxxxxxxxxxx")
-          socket.emit('setTime',`${this.room}:${this.user}:`+JSON.stringify(myPlayer.currentTime()))
+          socket.emit('setTime',`${this.room}:::${this.user}:::`+JSON.stringify(myPlayer.currentTime()))
         }
         this.currentTime =myPlayer.currentTime()
-      })
-      socket.on("getTime", (data) => {
-        console.log("getTime: " + data)
-        socket.emit("time",`${this.room}:${this.user}:`+JSON.stringify(myPlayer.currentTime()));
       })
       this.getTime();
     },
     join() {
-      socket.emit("join",`${this.room}:${this.user}`);
+      socket.emit("join",`${this.room}:::${this.user}`);
     },
     syncVideo() {
       console.log("syncVideo");
-      socket.emit("sync", `${this.room}:${this.user}`);
+      socket.emit("sync", `${this.room}:::${this.user}`);
     },
     getTime() {
       console.log("videoTimeis:", myPlayer.currentTime());
-      socket.emit("time",`${this.room}:${this.user}:`+JSON.stringify(myPlayer.currentTime()));
+      socket.emit("time",`${this.room}:::${this.user}:::`+JSON.stringify(myPlayer.currentTime()));
     },
     sendTime() {
       this.getTime();
     },
     getUsers() {
-      socket.emit("getUsers",`${this.room}:${this.user}`)
+      socket.emit("getUsers",`${this.room}:::${this.user}`)
     },
     getUrl() {
       console.log("getUrl");
       socket.emit("getUrl",`${this.room}`)
     },
     setUrl() {
-      socket.emit("setUrl",`${this.room}:::${this.url}`)
+      socket.emit("setUrl",`${this.room}:::${this.user}:::${this.url}`)
     },
     createRoom(){
       this.join();
@@ -217,5 +243,4 @@ export default {
 </script>
 
 <style scoped>
-  
 </style>
