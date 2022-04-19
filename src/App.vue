@@ -1,10 +1,6 @@
 <template>
-  <div id="nav"></div>
-  <v-app>
-    <v-main>
-      <router-view/>
-    </v-main>
-  </v-app>
+    <div id="nav"></div>
+    <router-view/>
 </template>
 
 <style lang="scss">
