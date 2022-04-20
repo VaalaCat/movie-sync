@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@mdi/font": "5.9.55",
+    "@videojs/themes": "^1.0.1",
     "axios": "^0.26.1",
     "core-js": "^3.8.3",
+    "postcss-preset-env": "^7.4.3",
     "roboto-fontface": "*",
     "video.js": "^7.18.1",
     "vue": "^3.2.13",

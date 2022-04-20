@@ -59,8 +59,8 @@
     </div>
     </v-expand-transition>
     <v-expand-transition>
-    <div v-show="start" style="margin: 20px;">
-      <video id="myVideo" class="video-js vjs-default-skin">
+    <div v-show="start" style="margin: 30px;">
+      <video id="myVideo" class="video-js vjs-theme-forest">
         <source :src="url" type="video/mp4" /></video
     ></div>
     </v-expand-transition>
