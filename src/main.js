@@ -5,7 +5,8 @@ import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
 
 require('video.js/dist/video-js.css')
-require('./assets/netflix.scss')
+// require('./assets/netflix.scss')
+require('@videojs/themes/dist/forest/index.css')
 
 loadFonts()
 
