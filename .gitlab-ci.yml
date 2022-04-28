@@ -47,5 +47,5 @@ deploy-job:      # This job runs in the deploy stage.
     - |
       ssh $SSH_USERNAME@$SSH_TARGET "rm -rf $DEPLOY_PATH/*"
       scp dist.tar.gz $SSH_USERNAME@$SSH_TARGET:$DEPLOY_PATH/
-      ssh $SSH_USERNAME@$SSH_TARGET "cd $DEPLOY_PATH && tar -xf dist.tar.gz && mv dist/* ./ && rm -rf dist*
+      ssh $SSH_USERNAME@$SSH_TARGET "cd $DEPLOY_PATH/ && tar -xf dist.tar.gz && mv dist/* ./ && rm -rf dist*
 
