@@ -107,11 +107,24 @@ export default {
         this.method = "create";
       }
     })
+    socket.on("play",(data)=>{
+      console.log("play",data);
+      myPlayer.play()
+      this.syncVideo()
+    })
+    socket.on("pause",(data)=>{
+      console.log("pause",data)
+      myPlayer.pause()
+      this.syncVideo()
+    })
     socket.on("Null",(data)=>{
       this.method = "create";
     })
     socket.on("setUrl", (data) => {
-      this.url = data;
+      if(data!=this.url){
+        this.url = data;
+        this.changeSrc()
+      }
       console.log(data);
     });
     socket.on("setTime", (data) => {
@@ -160,6 +173,9 @@ export default {
     },1000);
     this.createTimer = setInterval(() => {
       this.getUsers();
+      if(this.method=="create"){
+        return
+      }
       this.getUrl();
     },3000);
   },
@@ -193,6 +209,14 @@ export default {
           socket.emit('setTime',`${this.room}:::${this.user}:::`+JSON.stringify(myPlayer.currentTime()))
         }
         this.currentTime =myPlayer.currentTime()
+      })
+      myPlayer.on('pause',  () => {
+        console.log("pause")
+        socket.emit('pause',`${this.room}:::${this.user}`)
+      })
+      myPlayer.on('play',  () => {
+        console.log("play")
+        socket.emit('play',`${this.room}:::${this.user}`)
       })
       this.getTime();
     },
