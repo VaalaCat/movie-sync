@@ -27,7 +27,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: npm setup
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3.1.1
         with:
           node-version: 17
       - name: npm install and build
