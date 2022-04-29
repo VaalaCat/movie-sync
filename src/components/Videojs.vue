@@ -109,12 +109,16 @@ export default {
     })
     socket.on("play",(data)=>{
       console.log("play",data);
-      myPlayer.play()
+      if(myPlayer.readyState()!=0){
+        myPlayer.play()
+      }
       this.syncVideo()
     })
     socket.on("pause",(data)=>{
       console.log("pause",data)
-      myPlayer.pause()
+      if(myPlayer.readyState()!=0){
+        myPlayer.pause()
+      }
       this.syncVideo()
     })
     socket.on("Null",(data)=>{
@@ -212,11 +216,15 @@ export default {
       })
       myPlayer.on('pause',  () => {
         console.log("pause")
-        socket.emit('pause',`${this.room}:::${this.user}`)
+        if(myPlayer.readyState()!=0){
+          socket.emit('pause',`${this.room}:::${this.user}`)
+        }
       })
       myPlayer.on('play',  () => {
         console.log("play")
-        socket.emit('play',`${this.room}:::${this.user}`)
+        if(myPlayer.readyState()!=0){
+          socket.emit('play',`${this.room}:::${this.user}`)
+        }
       })
       this.getTime();
     },
