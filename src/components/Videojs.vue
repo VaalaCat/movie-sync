@@ -7,7 +7,7 @@
     <v-alert v-show="method=='create' && userList.length > 1">房间「{{room}}」中有 {{userList}} 正在一起观影</v-alert>
     </v-expand-transition>
     <v-expand-transition>
-    <div v-show="method=='create'">
+    <div v-show="method=='create'||otherUrl">
     <v-text-field label="视频地址" v-model="url" ></v-text-field>
     </div>
     </v-expand-transition>
@@ -33,15 +33,20 @@
     <v-row class="d-flex justify-center">
       <v-col>
         <div v-show="method=='create' && url!='' && user!=''">
-        <v-btn @click="createRoom()" >设置房间</v-btn>
-        </div>
+        <v-btn @click="createRoom()" >设置房间</v-btn></div>
+        
         <div v-show="method=='join' && url!='' && user!=''">
-        <v-btn @click="joinRoom()" >加入房间</v-btn>
-        </div>
+        <v-btn @click="joinRoom()" >{{joinButText}}</v-btn></div>
+        
       </v-col>
       <v-col>
         <div v-show="method!='x' && url!='' && user!=''">
         <v-btn @click="syncVideo()" >手动同步</v-btn>
+        </div>
+      </v-col>
+      <v-col>
+        <div v-show="method=='join' && url!='' && user!='' && start">
+        <v-switch v-model="otherUrl" color="red" label="独立链接模式"/>
         </div>
       </v-col>
     </v-row>
@@ -61,7 +66,7 @@
     <v-expand-transition>
     <div v-show="start" style="margin: 30px;">
       <video id="myVideo" class="video-js vjs-theme-forest">
-        <source :src="url" type="video/mp4" /></video
+        <source :src="url" :type="videoType" /></video
     ></div>
     </v-expand-transition>
   </div>
@@ -70,6 +75,8 @@
 <script>
 import Video from "video.js";
 import io from "socket.io-client";
+import url from "url";
+
 let myPlayer;
 const socket = io.connect();
 
@@ -91,6 +98,9 @@ export default {
       sendTimer: null,
       createTimer: null,
       currentTime: 0,
+      videoType: "video/mp4",
+      otherUrl: false,
+      joinButText: "加入房间",
     };
   },
   mounted() {
@@ -106,17 +116,16 @@ export default {
       if(this.userList.length==0){
         this.method = "create";
       }
+      this.getUrl();
     })
     socket.on("play",(data)=>{
-      console.log("play",data);
-      if(myPlayer.reakdyState()!=0 && data.split(":::")[1]!=this.user){
+      if(myPlayer.readyState()!=0 && data!=this.user){
         myPlayer.play()
       }
       this.syncVideo()
     })
     socket.on("pause",(data)=>{
-      console.log("pause",data)
-      if(myPlayer.readyState()!=0 && data.split(":::")[1]!=this.user){
+      if(myPlayer.readyState()!=0 && data!=this.user){
         myPlayer.pause()
       }
       this.syncVideo()
@@ -125,11 +134,19 @@ export default {
       this.method = "create";
     })
     socket.on("setUrl", (data) => {
-      if(data!=this.url){
-        this.url = data;
-        this.changeSrc()
+      if(this.otherUrl){
+        this.joinButText="覆盖URL"
+      }else{
+        this.joinButText="加入房间"
       }
-      console.log(data);
+      if(data!=this.url){
+        if (!this.otherUrl){
+          this.url = data;
+        }
+        if (this.user!="" && !this.otherUrl){
+          this.changeSrc()
+        }
+      }
     });
     socket.on("setTime", (data) => {
       let showName = data.split(":::")[0];
@@ -138,28 +155,22 @@ export default {
         return
       }
       if (Math.abs(parseFloat(newTime) - parseFloat(myPlayer.currentTime()))>2) {
-        console.log("setTime");
         myPlayer.currentTime(parseFloat(newTime));
       }
     })
     socket.on("join", (data)=>{
-      console.log("joined",data.split(":::"))
       this.getTime();
       this.getUsers();
+      this.getUrl();
     })
     socket.on("sync", (data) => {
       let myTime= JSON.stringify(myPlayer.currentTime())
-      console.log("data:",data)
-      console.log("myTime:",myTime)
       let showName = data.split(":::")[2];
-      console.log(showName)
       if (parseFloat(myTime)<parseFloat(data.split(":::")[1]) && Math.abs(parseFloat(myTime)-parseFloat(data.split(":::")[1]))>2) {
-        console.log("change")
         myPlayer.currentTime(parseFloat(data.split(":::")[1]));
       }
     });
     socket.on("getTime", (data) => {
-      console.log("getTime: " + data)
       socket.emit("time",`${this.room}:::${this.user}:::`+JSON.stringify(myPlayer.currentTime()));
     })
     socket.on("leaveRoom", (data)=>{
@@ -198,10 +209,20 @@ export default {
     changeSrc() {
       this.start = true;
       this.initVideo();
-      console.log("changeSrc");
+      let urlData=url.parse(this.url);
+      let tmpVideoType = urlData.pathname.split(".").pop();
+      if(tmpVideoType=="mp4"){
+        this.videoType = "video/mp4";
+      }else if(tmpVideoType=="webm"){
+        this.videoType = "video/webm";
+      }else if(tmpVideoType=="ogg"){
+        this.videoType = "video/ogg";
+      }else if(tmpVideoType=="m3u8"){
+        this.videoType = "application/x-mpegURL";
+      }
       myPlayer.src({
         src: this.url,
-        type: "video/mp4",
+        type: this.videoType,
       });
       myPlayer.on('timeupdate',  () => {
         let tmpTime=myPlayer.currentTime()
@@ -209,19 +230,16 @@ export default {
           return;
         }
         if(tmpTime - this.currentTime > 2 || tmpTime - this.currentTime < -2){
-          console.log("xxxxxxxxxxxxxxxx")
           socket.emit('setTime',`${this.room}:::${this.user}:::`+JSON.stringify(myPlayer.currentTime()))
         }
         this.currentTime =myPlayer.currentTime()
       })
       myPlayer.on('pause',  () => {
-        console.log("pause")
         if(myPlayer.readyState()!=0){
           socket.emit('pause',`${this.room}:::${this.user}`)
         }
       })
       myPlayer.on('play',  () => {
-        console.log("play")
         if(myPlayer.readyState()!=0){
           socket.emit('play',`${this.room}:::${this.user}`)
         }
@@ -232,11 +250,9 @@ export default {
       socket.emit("join",`${this.room}:::${this.user}`);
     },
     syncVideo() {
-      console.log("syncVideo");
       socket.emit("sync", `${this.room}:::${this.user}`);
     },
     getTime() {
-      console.log("videoTimeis:", myPlayer.currentTime());
       socket.emit("time",`${this.room}:::${this.user}:::`+JSON.stringify(myPlayer.currentTime()));
     },
     sendTime() {
@@ -249,7 +265,6 @@ export default {
       socket.emit("getUsers",`${this.room}:::${this.user}`)
     },
     getUrl() {
-      console.log("getUrl");
       socket.emit("getUrl",`${this.room}`)
     },
     setUrl() {

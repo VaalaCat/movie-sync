@@ -14,6 +14,7 @@
     "core-js": "^3.8.3",
     "postcss-preset-env": "^7.4.3",
     "roboto-fontface": "*",
+    "url": "^0.11.0",
     "video.js": "^7.18.1",
     "vue": "^3.2.13",
     "vue-router": "^4.0.14",
