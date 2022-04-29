@@ -101,7 +101,7 @@ export default {
         this.method = "create";
       }
       if(this.userList.indexOf(this.user)==-1 && this.userList.length>=1 && this.method!="join"){
-        this.method = "join";
+        this.method = "join"
       }
       if(this.userList.length==0){
         this.method = "create";
@@ -109,14 +109,14 @@ export default {
     })
     socket.on("play",(data)=>{
       console.log("play",data);
-      if(myPlayer.readyState()!=0){
+      if(myPlayer.reakdyState()!=0 && data.split(":::")[1]!=this.user){
         myPlayer.play()
       }
       this.syncVideo()
     })
     socket.on("pause",(data)=>{
       console.log("pause",data)
-      if(myPlayer.readyState()!=0){
+      if(myPlayer.readyState()!=0 && data.split(":::")[1]!=this.user){
         myPlayer.pause()
       }
       this.syncVideo()
