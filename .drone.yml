@@ -40,5 +40,5 @@ steps:
       envs: [DEPLOY_PATH]
       script:
         - mv $${DEPLOY_PATH}/dist/* $${DEPLOY_PATH}/ && rm -rf $${DEPLOY_PATH}/dist
-        - cd $${DEPLOY_PATH}/../ && docker-compsoe restart
+        - cd $${DEPLOY_PATH}/../ && docker-compose restart
       
