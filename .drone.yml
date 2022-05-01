@@ -23,3 +23,19 @@ steps:
         from_secret: DEPLOY_PATH
       source: dist/*
       rm: true
+  
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: SSH_TARGET
+      username:
+        from_secret: SSH_USERNAME
+      port: 22
+      key:
+        from_secret: SSH_PRIVATE_KEY
+      script:
+        - mv $DEPLOY_PATH/dist/* $DEPLOY_PATH/ && rm -f $DEPLOY_PATH/dist
+      environment:
+        DEPLOY_PATH:
+          from_secret: DEPLOY_PATH
