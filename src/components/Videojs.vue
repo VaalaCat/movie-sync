@@ -139,6 +139,9 @@ export default {
       }else{
         this.joinButText="加入房间"
       }
+      if (this.method=="create"){
+        return
+      }
       if(data!=this.url){
         if (!this.otherUrl){
           this.url = data;
@@ -219,6 +222,8 @@ export default {
         this.videoType = "video/ogg";
       }else if(tmpVideoType=="m3u8"){
         this.videoType = "application/x-mpegURL";
+      }else{
+        this.videoType = "video/mp4";
       }
       myPlayer.src({
         src: this.url,
