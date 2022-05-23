@@ -78,7 +78,7 @@ import io from "socket.io-client";
 import url from "url";
 
 let myPlayer;
-const socket = io.connect("http://127.0.0.1:8000");
+const socket = io.connect();
 
 
 /* eslint-disable */
