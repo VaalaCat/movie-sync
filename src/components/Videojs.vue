@@ -78,7 +78,7 @@ import io from "socket.io-client";
 import url from "url";
 
 let myPlayer;
-const socket = io.connect();
+const socket = io.connect("http://127.0.0.1:8000");
 
 
 /* eslint-disable */
@@ -119,13 +119,13 @@ export default {
       this.getUrl();
     })
     socket.on("play",(data)=>{
-      if(myPlayer.readyState()!=0 && data!=this.user){
+      if(myPlayer.readyState()>1 && data!=this.user){
         myPlayer.play()
       }
       this.syncVideo()
     })
     socket.on("pause",(data)=>{
-      if(myPlayer.readyState()!=0 && data!=this.user){
+      if(data!=this.user){
         myPlayer.pause()
       }
       this.syncVideo()
@@ -154,12 +154,22 @@ export default {
     socket.on("setTime", (data) => {
       let showName = data.split(":::")[0];
       let newTime = data.split(":::")[1];
+      myPlayer.off('seeking')
       if (showName == this.user){
+        myPlayer.on('seeking', () =>{
+          socket.emit('setTime',`${this.room}:::${this.user}:::`+JSON.stringify(myPlayer.currentTime()))
+        })
         return
       }
-      if (Math.abs(parseFloat(newTime) - parseFloat(myPlayer.currentTime()))>2) {
+      if (Math.abs(parseFloat(newTime) - parseFloat(myPlayer.currentTime()))>1) {
+        myPlayer.one('seeked',()=>{
+          myPlayer.play()
+        })
         myPlayer.currentTime(parseFloat(newTime));
       }
+      myPlayer.on('seeking', () =>{
+        socket.emit('setTime',`${this.room}:::${this.user}:::`+JSON.stringify(myPlayer.currentTime()))
+      })
     })
     socket.on("join", (data)=>{
       this.getTime();
@@ -169,7 +179,7 @@ export default {
     socket.on("sync", (data) => {
       let myTime= JSON.stringify(myPlayer.currentTime())
       let showName = data.split(":::")[2];
-      if (parseFloat(myTime)<parseFloat(data.split(":::")[1]) && Math.abs(parseFloat(myTime)-parseFloat(data.split(":::")[1]))>2) {
+      if (parseFloat(myTime)<parseFloat(data.split(":::")[1]) && Math.abs(parseFloat(myTime)-parseFloat(data.split(":::")[1]))>1) {
         myPlayer.currentTime(parseFloat(data.split(":::")[1]));
       }
     });
@@ -229,15 +239,20 @@ export default {
         src: this.url,
         type: this.videoType,
       });
-      myPlayer.on('timeupdate',  () => {
-        let tmpTime=myPlayer.currentTime()
-        if(tmpTime==0) {
-          return;
-        }
-        if(tmpTime - this.currentTime > 2 || tmpTime - this.currentTime < -2){
-          socket.emit('setTime',`${this.room}:::${this.user}:::`+JSON.stringify(myPlayer.currentTime()))
-        }
-        this.currentTime =myPlayer.currentTime()
+      // myPlayer.on('timeupdate',  () => {
+      //   let tmpTime=myPlayer.currentTime()
+      //   if(tmpTime==0) {
+      //     return;
+      //   }
+      //   if(tmpTime - this.currentTime > 2 || tmpTime - this.currentTime < -2){
+      //     socket.emit('setTime',`${this.room}:::${this.user}:::`+JSON.stringify(myPlayer.currentTime()))
+      //     myPlayer.pause()
+      //   }
+      //   this.currentTime = myPlayer.currentTime()
+        
+      // })
+      myPlayer.on('seeking', () =>{
+        socket.emit('setTime',`${this.room}:::${this.user}:::`+JSON.stringify(myPlayer.currentTime()))
       })
       myPlayer.on('pause',  () => {
         if(myPlayer.readyState()!=0){
@@ -245,7 +260,7 @@ export default {
         }
       })
       myPlayer.on('play',  () => {
-        if(myPlayer.readyState()!=0){
+        if(myPlayer.readyState()>1){
           socket.emit('play',`${this.room}:::${this.user}`)
         }
       })
