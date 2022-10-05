@@ -1,6 +1,6 @@
 # 多人在线电影院
 
-> 演示地址: [http://82.157.94.120:9999/](http://82.157.94.120:9999/) 不保证可用性，有需要的同学请自行搭建服务
+> 演示地址: [https://movie.vaala.cat/](https://movie.vaala.cat/) 不保证可用性，有需要的同学请自行搭建服务
 
 > 测试用视频地址：[https://media.w3.org/2010/05/sintel/trailer.mp4](https://media.w3.org/2010/05/sintel/trailer.mp4)
 
