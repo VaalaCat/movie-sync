@@ -3,42 +3,33 @@ type: docker
 name: default
 
 steps:
-  - name: npm install and build
-    image: node:17
-    commands:
-      - |
-        npm install --registry https://registry.npm.taobao.org && npm run build
+- name: go get and build
+  image: golang:1.18.1
+  commands:
+    - |
+      mkdir -p artifacts
+      CGO_ENABLED=0 GOPROXY=https://mirrors.aliyun.com/goproxy,direct go build -o artifacts ./...
 
-  - name: transfer file to server
-    image: appleboy/drone-scp
-    settings:
-      host:
-        from_secret: SSH_TARGET
-      username:
-        from_secret: SSH_USERNAME
-      port: 22
-      key:
-        from_secret: SSH_PRIVATE_KEY
-      target:
-        from_secret: DEPLOY_PATH
-      source: dist/*
-      rm: true
-  
-  - name: deploy
-    image: appleboy/drone-ssh
-    environment:
-      DEPLOY_PATH:
-        from_secret: DEPLOY_PATH
-    settings:
-      host:
-        from_secret: SSH_TARGET
-      username:
-        from_secret: SSH_USERNAME
-      port: 22
-      key:
-        from_secret: SSH_PRIVATE_KEY
-      envs: [DEPLOY_PATH]
-      script:
-        - mv $${DEPLOY_PATH}/dist/* $${DEPLOY_PATH}/ && rm -rf $${DEPLOY_PATH}/dist
-        - cd $${DEPLOY_PATH}/../ && docker-compose restart
-      
+- name: deploy
+  image: python:3.6
+  environment:
+    SSH_PRIVATE_KEY:
+      from_secret: SSH_PRIVATE_KEY
+    SSH_TARGET:
+      from_secret: SSH_TARGET
+    SSH_USERNAME:
+      from_secret: SSH_USERNAME
+    DEPLOY_PATH:
+      from_secret: DEPLOY_PATH
+  commands:
+    - |
+      which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )
+      eval $(ssh-agent -s)
+      echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+      mkdir -p ~/.ssh
+      chmod 700 ~/.ssh
+      ssh-keyscan $SSH_TARGET >> ~/.ssh/known_hosts
+      ssh $SSH_USERNAME@$SSH_TARGET "cd $DEPLOY_PATH/../ && docker-compose down"
+      ssh $SSH_USERNAME@$SSH_TARGET "rm -rf $DEPLOY_PATH/movie-sync-server"
+      scp artifacts/movie-sync-server $SSH_USERNAME@$SSH_TARGET:$DEPLOY_PATH/
+      ssh $SSH_USERNAME@$SSH_TARGET "cd $DEPLOY_PATH/ && chmod +x movie-sync-server && cd .. && docker-compose up -d"
