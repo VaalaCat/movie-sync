@@ -1,14 +1,16 @@
 # 多人在线电影院
 
+> 2024/01/19 凌晨🕛1点09分，发布了船新的v2版本！
+
 > 演示地址: [https://movie.vaala.cat/](https://movie.vaala.cat/) 不保证可用性，有需要的同学请自行搭建服务
 
 > 测试用视频地址：[https://media.w3.org/2010/05/sintel/trailer.mp4](https://media.w3.org/2010/05/sintel/trailer.mp4)
 
-> 这是前端代码仓库，可执行文件请在这里下载 [https://github.com/VaalaCat/movie-sync/releases](https://github.com/VaalaCat/movie-sync/releases)
+> 这是后端代码仓库，可执行文件请在这里下载 [https://github.com/VaalaCat/movie-sync-server/releases](https://github.com/VaalaCat/movie-sync-server/releases)
 
-> 后端代码仓库，请访问 [https://github.com/VaalaCat/movie-sync-server](https://github.com/VaalaCat/movie-sync-server)
+> 前端代码仓库，请访问 [https://github.com/VaalaCat/movie-sync](https://github.com/VaalaCat/movie-sync)
 
-> 博客地址(实时更新)：[https://vaala.cat/2022/04/17/%E5%BC%82%E5%9C%B0%E5%A4%9A%E4%BA%BA%E5%9C%A8%E7%BA%BF%E7%94%B5%E5%BD%B1%E9%99%A2/](https://vaala.cat/2022/04/17/%E5%BC%82%E5%9C%B0%E5%A4%9A%E4%BA%BA%E5%9C%A8%E7%BA%BF%E7%94%B5%E5%BD%B1%E9%99%A2/)
+> 博客原文：[https://vaala.cat/2022/04/17/%E5%BC%82%E5%9C%B0%E5%A4%9A%E4%BA%BA%E5%9C%A8%E7%BA%BF%E7%94%B5%E5%BD%B1%E9%99%A2/](https://vaala.cat/2022/04/17/%E5%BC%82%E5%9C%B0%E5%A4%9A%E4%BA%BA%E5%9C%A8%E7%BA%BF%E7%94%B5%E5%BD%B1%E9%99%A2/) 
 
 ## 引言
 
@@ -18,9 +20,10 @@
 
 ## 演示
 
- ![电脑和电脑](./img/mac-and-mac.gif)
+![电脑和电脑](./img/mac-and-mac.gif)
 
- ![电脑和手机](./img/mac-and-phone.gif)
+![电脑和手机](./img/mac-and-phone.gif)
+
 
 ## 产品调研
 
@@ -86,7 +89,7 @@
 
 大家最关心的也许是这个吧，因为是一个Web项目，所以需要一台服务器，这是肯定的吧，并且资源的来源是第三方流媒体，所以流畅程度并不取决于服务器的带宽，服务器只用来做进度条数据的同步，可以说负载非常的低，10Kb网络都不会有问题，也可以实现毫秒级的同步。为了方便部署，我将项目编译到了Release，需要的同学可以自行下载，（这里可以开开脑洞使用树莓派或者软路由做DDNS或者内网穿透运行起来
 
-部署方式有两个，建议使用docker部署
+部署方式有两种，一种是使用`Docker`，另一种是手动部署，建议使用`Docker`部署
 
 ### Docker预编译镜像
 
@@ -98,7 +101,7 @@ docker run -d -p 9999:9999 -e PORT=9999 -e ALLOW_ORIGIN=http://localhost:9999 --
 
 ### 手动部署
 
-首先我们需要分别下载前端和后端文件，
+先我们需要分别下载前端和后端文件，
 
 * 前端：<https://github.com/VaalaCat/movie-sync/releases>
 * 后端：<https://github.com/VaalaCat/movie-sync-server/releases>

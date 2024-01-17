@@ -3,71 +3,39 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "@mdi/font": "5.9.55",
-    "@videojs/themes": "^1.0.1",
-    "axios": "^0.26.1",
-    "core-js": "^3.8.3",
-    "postcss-preset-env": "^7.4.3",
-    "roboto-fontface": "*",
-    "url": "^0.11.0",
-    "video.js": "^7.18.1",
-    "vue": "^3.2.13",
-    "vue-router": "^4.0.14",
-    "vue-socket.io": "^3.0.10",
-    "vuetify": "npm:@vuetify/nightly@next",
-    "webfontloader": "^1.0.0"
+    "@nanostores/react": "^0.7.1",
+    "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@vidstack/react": "^1.9.8",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "hls.js": "^1.5.1",
+    "lucide-react": "^0.311.0",
+    "media-icons": "^1.0.0",
+    "nanostores": "^0.9.5",
+    "next": "14.0.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-icons": "^5.0.1",
+    "socket.io-client": "^4.7.4",
+    "tailwind-merge": "^2.2.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3",
-    "sass": "^1.38.0",
-    "sass-loader": "^10.0.0",
-    "vue-cli-plugin-vuetify": "~2.4.8",
-    "vuetify-loader": "^2.0.0-alpha.0"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ],
-  "_id": "movie-sync@0.1.0",
-  "bugs": {
-    "url": "https://github.com/VaalaCat/movie-sync/issues"
-  },
-  "homepage": "https://github.com/VaalaCat/movie-sync#readme",
-  "keywords": [
-    "movie",
-    "node",
-    "vue"
-  ],
-  "license": "ISC",
-  "readme": "ERROR: No README data found!",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/VaalaCat/movie-sync.git"
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.4",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5"
   }
 }
