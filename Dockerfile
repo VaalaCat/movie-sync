@@ -1,9 +1,15 @@
+FROM node:20 AS frontend
+WORKDIR /app
+COPY . .
+RUN npm install && npm run build
+
+FROM golang:1.21 AS builder
+WORKDIR /app
+COPY . .
+COPY --from=frontend /app/out /app/out
+RUN go build -o movie-sync-server
+
 FROM alpine
-
-COPY movie-sync-server-linux-amd64 /app/bin/movie-sync-server-linux-amd64
-
-COPY dist /app/asset
-
-WORKDIR /app/bin
-
-CMD [ "/app/bin/movie-sync-server-linux-amd64" ]
+COPY --from=builder /app/movie-sync-server /app/
+WORKDIR /app
+CMD ["/app/movie-sync-server"]
