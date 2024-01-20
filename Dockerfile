@@ -7,9 +7,9 @@ FROM golang:1.21 AS builder
 WORKDIR /app
 COPY . .
 COPY --from=frontend /app/out /app/out
-RUN go build -o movie-sync-server
+RUN CGO_ENABLED=0 go build -o movie-sync-server
 
-FROM alpine
+FROM debian:bullseye-slim
 COPY --from=builder /app/movie-sync-server /app/
 WORKDIR /app
 CMD ["/app/movie-sync-server"]
