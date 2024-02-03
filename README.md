@@ -1,6 +1,6 @@
 # 多人在线电影院
 
-> 2024/01/19 凌晨🕛1点09分，发布了船新的v2版本！
+> 2024/01/19 凌晨🕛1点09分，发布了船新的v2版本！无需分别部署前后端，只用一个文件即可启动，请转到Release下载
 
 > 演示地址: [https://movie.vaala.cat/](https://movie.vaala.cat/) 不保证可用性，有需要的同学请自行搭建服务
 
@@ -57,12 +57,16 @@
 
 前端：
 
+> 全新版本使用React和VidStack / TailwindCSS / ShadcnUI / Nextjs 重构！更流畅更稳定！
+
 * 使用VideoJS加载第三方视频，API丰富，有事件驱动可以实现远端触发本地函数执行。可以加载mp4和webm以及ogg编码的第三方流媒体。
 * 使用WebSocket作为前后端业务数据交换协议，长连接稳定可靠，事件驱动，容易实现多人数据同步（但目前看来有数据冲突，后期准备换用CRDT数据结构）。
 * 使用Vue构建PWA，前后端分离，快速更换服务端降低延迟提升体验。
 * Vuetify：Material Design，动画丰富，用户体验好。
 
 后端：
+
+> 全新版本升级为socketio 4！
 
 * Golang：大道至简。
 * Gin/Socketio：现成的，好用。
@@ -101,24 +105,16 @@ docker run -d -p 9999:9999 -e PORT=9999 -e ALLOW_ORIGIN=http://localhost:9999 --
 
 ### 手动部署
 
-先我们需要分别下载前端和后端文件，
+先我们需要下载部署文件，
 
-* 前端：<https://github.com/VaalaCat/movie-sync/releases>
-* 后端：<https://github.com/VaalaCat/movie-sync-server/releases>
+* 最新版本：<https://github.com/VaalaCat/movie-sync/releases>
 
-下载完成后在服务端创建文件夹，结构为：
+下载完成后创建文件夹`ProjectDir`，结构为：
 
 ```
 ProjectDir
-├── asset # 下载好的前端文件放在这里吗
-│   ├── css
-│   ├── favicon.ico
-│   ├── fonts
-│   ├── index.html
-│   └── js
-└── movie-sync-server # 后端文件放在这里
-    ├── .env # 该文件需要手动创建
-    └── movie-sync-server
+  ├── .env # 该文件需要手动创建
+  └── movie-sync-server
 ```
 
 然后我们编辑后端文件夹中的`.env` 文件，内容为：
@@ -131,7 +127,7 @@ ALLOW_ORIGIN=http://localhost:8000
 这里的端口就是程序将监听的端口，后面的`ALLOW_ORIGIN`要改为**客户端浏览器中访问时显示的地址**，不用添加后面的路径，因为有些时候会经过Nginx之类的反向代理，所以链接可能会变成其他样子。修改完成后保存文件，然后就可以直接运行了，切换到后端文件夹：
 
 ```bash
-cd ProjectDir/movie-sync-server
+cd ProjectDir
 chmod +x movie-sync-server && ./movie-sync-server
 ```
 
