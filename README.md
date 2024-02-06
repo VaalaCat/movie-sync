@@ -4,7 +4,7 @@
 
 > 演示地址: [https://movie.vaala.cat/](https://movie.vaala.cat/) 不保证可用性，有需要的同学请自行搭建服务
 
-> 测试用视频地址：[https://media.w3.org/2010/05/sintel/trailer.mp4](https://media.w3.org/2010/05/sintel/trailer.mp4)
+> 测试用视频地址：[https://hnzy.bfvvs.com/play/yb8n12Le/index.m3u8](https://hnzy.bfvvs.com/play/yb8n12Le/index.m3u8)
 
 > 这是后端代码仓库，可执行文件请在这里下载 [https://github.com/VaalaCat/movie-sync-server/releases](https://github.com/VaalaCat/movie-sync-server/releases)
 
