@@ -43,6 +43,9 @@ export const UserList = ({ roomName }: { roomName: string }) => {
                         <TableCell className="text-center">{user.playing == true ? '播放中' : '暂停中'}</TableCell>
                     </TableRow>
                 ))}
+                {userStatus.length == 0 && <><TableRow>
+                    <TableCell className="text-center h-full align-middle" colSpan={3}>该房间暂无用户</TableCell>
+                </TableRow></>}
             </TableBody>
             <TableFooter>
             </TableFooter>

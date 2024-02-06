@@ -14,38 +14,40 @@ export default function Page() {
     const userInfo = useStore($userInfo);
     const playerState = useStore($playerState);
     const [url, setUrl] = useState<string | undefined>();
+    const [urlInput, setUrlInput] = useState<string | undefined>();
 
     const roomName = router.query.room as string
     return (
-        <div className='flex flex-col lg:flex-row m-2'>
-            {roomName && <div className='lg:w-3/4 lg:mr-2'>
+        <div className='flex flex-col lg:flex-row m-2 justify-center'>
+            {roomName && url && <div className='w-full lg:mr-2'>
                 <Player roomName={roomName} />
             </div>}
-            <div className='lg:w-1/4 mb-1 border rounded'>
+            <div className='w-full lg:w-[450px] mb-1 border rounded'>
                 {roomName && <div className='m-2 flex flex-row gap-2'>
                     <Input onChange={(e) => {
                         $userInfo.set({ username: e.target.value })
-                    }} />
+                    }} placeholder='你的用户名' />
                     <Button onClick={() => {
                         socket.connect();
                         socket.emit('join', JSON.stringify({
                             username: userInfo?.username,
                             room: roomName,
                         } as ClientMessage));
-                    }}>加入</Button>
+                    }}>加入房间</Button>
                 </div>}
                 {userInfo?.username && <div className='m-2 flex flex-row gap-2'>
                     <Input key={playerState?.url} defaultValue={playerState?.url} onChange={(e) => {
-                        setUrl(e.target.value)
-                    }} />
+                        setUrlInput(e.target.value)
+                    }} placeholder='视频直链' />
                     <Button onClick={() => {
-                        $playerState.set({ ...playerState, url })
+                        setUrl(urlInput)
+                        $playerState.set({ ...playerState, url: urlInput })
                         socket.emit('setUrl', JSON.stringify({
                             room: roomName,
                             username: userInfo?.username,
-                            url: url
+                            url: urlInput
                         } as ClientMessage))
-                    }} >设置</Button>
+                    }} >修改链接</Button>
                 </div>}
                 {roomName && <UserList roomName={roomName} />}
             </div>

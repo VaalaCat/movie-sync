@@ -17,8 +17,8 @@ export default function Home() {
     >
       <div className='flex justify-center items-center h-screen'>
         <div className='flex flex-col gap-3'>
-          <Label className='font-bold text-center'>房间</Label>
-          <Input onChange={(e) => setRoomName(e.target.value)} />
+          <Label className='font-bold text-center'>在线电影院</Label>
+          <Input placeholder='请输入房间名' onChange={(e) => setRoomName(e.target.value)} />
           <Button onClick={() => {
             router.push(`/room/${roomName}`)
           }}>加入</Button>
